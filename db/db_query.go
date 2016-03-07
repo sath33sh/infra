@@ -13,6 +13,41 @@ type QueryResult interface {
 	GetRowPtr(int) interface{}
 }
 
+// Query limits.
+const (
+	QUERY_LIMIT_DEFAULT = 20
+	QUERY_LIMIT_MAX     = 200
+)
+
+// Parse query page arguments limit and offset.
+func ParsePageArgs(limitStr, offsetStr string) (limit, offset int, err error) {
+	// Parse limit.
+	if limitStr != "" {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			log.Errorf("Invalid limit %s", limitStr)
+			return 0, 0, util.ErrInvalidInput
+		}
+	}
+
+	if limit == 0 {
+		limit = QUERY_LIMIT_DEFAULT
+	} else if limit > QUERY_LIMIT_MAX {
+		limit = QUERY_LIMIT_MAX
+	}
+
+	// Parse offset.
+	if offsetStr != "" {
+		offset, err = strconv.Atoi(offsetStr)
+		if err != nil {
+			log.Errorf("Invalid offset %s", offsetStr)
+			return 0, 0, util.ErrInvalidInput
+		}
+	}
+
+	return limit, offset, nil
+}
+
 // Execute N1QL query.
 func ExecQuery(bIndex BucketIndex, qr QueryResult, queryStmt string) (size int, err error) {
 	log.Debugf(MODULE, "Bucket %d, Query {%s}", bIndex, queryStmt)

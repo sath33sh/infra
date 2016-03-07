@@ -37,6 +37,7 @@ func getValidMeta(obj Object) (meta ObjMeta, err error) {
 	if len(meta.Type) == 0 ||
 		len(meta.Id) == 0 ||
 		int(meta.Bucket) >= len(Buckets) {
+		log.Errorf("Invalid metadata: type %s, id %s, bucket %d", meta.Type, meta.Id, meta.Bucket)
 		return ObjMeta{}, util.ErrInvalidObject
 	}
 
