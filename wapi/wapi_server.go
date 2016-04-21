@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-const MODULE = "cas"
+const MODULE = "wapi"
 
 type Router struct {
 	mux *httprouter.Router

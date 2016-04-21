@@ -37,15 +37,15 @@ var (
 func validateHost(host string) (string, error) {
 	if host == "" {
 		// Read host from env.
-		host = os.Getenv("CAS_HOST")
+		host = os.Getenv("WAPI_HOST")
 	}
 
 	if host == "" {
 		return host, util.ErrInvalidInput
 	}
 
-	// By default security is enabled unless ${CAS_SECURE} is set to "false".
-	if strings.EqualFold(os.Getenv("CAS_SECURE"), "false") {
+	// By default security is enabled unless ${WAPI_SECURE} is set to "false".
+	if strings.EqualFold(os.Getenv("WAPI_SECURE"), "false") {
 		secure = false
 	} else {
 		secure = true
