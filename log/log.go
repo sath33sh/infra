@@ -3,9 +3,9 @@ package log
 
 import (
 	"fmt"
-	"github.com/sath33sh/infra/config"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"io"
+	"io/ioutil"
 	stdlog "log"
 	"os"
 	"sync"
@@ -131,28 +131,19 @@ func GetDebugLogger() *stdlog.Logger {
 	return debugLogger
 }
 
-func Init(logFilePath string) {
+func Init(logFilePath string, logLevel string, stdout bool) {
 	levelMap := map[string]int{
 		"fatal": FATAL,
 		"error": ERROR,
 		"debug": DEBUG,
 	}
 
-	// Parse config file.
 	// Log level.
-	levelStr := config.Base.GetString("log", "level", "error")
+	levelStr := logLevel
 	var ok bool
 	if level, ok = levelMap[levelStr]; !ok {
 		// Default to ERROR.
 		level = ERROR
-	}
-
-	// Stdout.
-	var stdout bool
-	if logFilePath == "" {
-		stdout = config.Base.GetBool("log", "stdout", true)
-	} else {
-		stdout = config.Base.GetBool("log", "stdout", false)
 	}
 
 	if logFilePath != "" {
@@ -170,5 +161,7 @@ func Init(logFilePath string) {
 	} else if stdout {
 		// Log to stdout only.
 		initLoggers(os.Stdout)
+	} else {
+		initLoggers(ioutil.Discard)
 	}
 }
